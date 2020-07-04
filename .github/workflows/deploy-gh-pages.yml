@@ -3,11 +3,11 @@ name: Deploy the static files to GitHub Pages
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
   deploy:
-    name: Deploy
+    name: "Deploy"
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,23 +15,28 @@ jobs:
         node-version: [10.x]
 
     steps:
-    - name: checkout
+    - name: "Checkout"
       uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: "Set Node.js version ${{ matrix.node-version }}"
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
 
-    - run: npm install -g yarn
+    - name: "Install node"
+      run: npm install -g yarn
 
-    - name: Build the project
+    - name: "Install dependencies"
       run: |
         yarn
+
+    - name: "Build the project"
+      run: |
         yarn build
 
-    - name: Deploy
+    - name: "Deploy to GitHub Pages on master branch"
       uses: peaceiris/actions-gh-pages@v3.6.1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./build
+        publish_branch: master
